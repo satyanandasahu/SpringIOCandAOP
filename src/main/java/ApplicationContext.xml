@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/context 
+						http://www.springframework.org/schema/context/spring-context.xsd
+						http://www.springframework.org/schema/aop
+						http://www.springframework.org/schema/aop/spring-aop.xsd">
+						
+
+	<!-- Bean definitions go here  -->
+
+	<bean id="currentAccount" class="com.spring.example.vo.CurrentAccount" />
+	
+	<bean id="savingAccount" class="com.spring.example.vo.SavingAccount" scope="prototype" >
+	</bean>
+
+
+	<bean id="accountService" class="com.spring.example.service.AccountService">
+		<property name="currentAccount" ref="currentAccount" />
+		<property name="savingAccount" ref="savingAccount" />
+		<property name="accountServiceDAO" ref="accountServiceDA" />
+	</bean> 
+	
+	<bean id="accountServiceDA" class="com.spring.example.service.AccountServiceDAO" />
+	
+	<bean id="accountSerDAO" class="com.spring.example.service.AccountServDAO" />
+	
+<!--
+	<aop:aspectj-autoproxy />
+
+	<bean id="opBean" class="com.javatpoint.Operation"> </bean>
+	<bean id="trackAspect" class="com.javatpoint.TrackOperation"></bean>
+
+	<aop:config>
+		<aop:aspect id="myaspect" ref="trackAspect">
+			 @Before 
+			<aop:pointcut id="pointCutBefore"
+				expression="execution(* com.javatpoint.Operation.*(..))" />
+			<aop:before method="myadvice" pointcut-ref="pointCutBefore" />
+		</aop:aspect>
+	</aop:config>
+
+-->
+
+
+	<bean id="loggingAspect" class="com.spring.example.service.logging.LoggingAspect" />
+	
+	<aop:config>
+		<aop:aspect ref="loggingAspect">
+		
+		<!--	 all public methods with any arguments of any type and any
+			return type of all classes in the com.spring.example.service package -->
+			
+			<aop:pointcut id="logForAllMethods"
+				expression="execution(* com.spring.example.service.*.*(..))" />
+				
+		<!--	 all public methods whose name are transfer() with taking three
+			arguments of any type and any return type of all classes in the
+			com.doj.aopapp.service package  -->
+			<aop:pointcut id="logForAllBefore"
+				expression="execution(* com.spring.example.service.*.*(..))"/>  
+				
+			<aop:after method="afterAdviceForAllMethods" pointcut-ref="logForAllMethods" />
+			<aop:before method="beforeAdviceForMethods" pointcut-ref="logForAllBefore" /> 
+			
+		</aop:aspect>
+	</aop:config>
+
+	
+
+</beans>
